@@ -18,5 +18,7 @@ export class UserService {
         password: await hash(body.password, 10),
       },
     });
+    const { password, ...result } = newUSer;
+    return result;
   }
 }
