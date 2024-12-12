@@ -8,7 +8,9 @@ import { JwtService } from '@nestjs/jwt';
 
 @Module({})
 export class AuthModule {
+  // AuthModule for import all the services and controllers
   Controller: [AuthController];
   providers: [AuthService, PrismaService, JwtService];
+    // Import all the services
   imports: [UserService];
 }
