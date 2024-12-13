@@ -5,9 +5,7 @@ import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
-  
   constructor(
-    
     private userService: UserService,
     private jwtService: JwtService,
   ) {}
@@ -25,7 +23,7 @@ export class AuthService {
         // expiresIn is set to 1 hour
         // secret is set to jwtSecretKey
         accessToken: await this.jwtService.signAsync(payload, {
-          expiresIn: '1h',
+          expiresIn: '20s',
           secret: process.env.jwtSecretKey,
         }),
         // Generate refresh token
@@ -54,10 +52,29 @@ export class AuthService {
       // Return user if valid
       // Destructure password from user object
       const { password, ...result } = isUserValidate;
-      
+
       return result;
     }
 
     throw new UnauthorizedException('Invalid credentials');
+  }
+
+  async refreshToken(user: any) {
+    console.log("user ",user)
+    // Validate user
+    const payload = { email: user.email, sub: user.sub };
+    // Generate access token
+    // expiresIn is set to 1 hour
+    return {
+      accessToken: await this.jwtService.signAsync(payload, {
+        expiresIn: '20s',
+        secret: process.env.jwtSecretKey,
+      }),
+
+      refreshToken: await this.jwtService.signAsync(payload, {
+        expiresIn: '7d',
+        secret: process.env.jwtRefreshTokenKey,
+      }),
+    };
   }
 }
